@@ -299,6 +299,14 @@ Please make sure your contributions adhere to our coding guidelines:
 Please see the [Developers' Guide](https://github.com/ethereum/go-ethereum/wiki/Developers'-Guide)
 for more details on configuring your environment, managing project dependencies, and testing procedures.
 
+## Install protoc
+```bash
+  PROTOC_ZIP=protoc-3.7.1-linux-x86_64.zip
+  curl -OL https://github.com/google/protobuf/releases/download/v3.7.1/$PROTOC_ZIP
+  sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+  sudo unzip -o $PROTOC_ZIP -d /usr/local include/*
+  rm -f $PROTOC_ZIP
+```
 ## License
 
 The go-ethereum library (i.e. all code outside of the `cmd` directory) is licensed under the

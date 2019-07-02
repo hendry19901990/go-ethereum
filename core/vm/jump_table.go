@@ -338,6 +338,13 @@ func newFrontierInstructionSet() [256]operation {
 			memorySize: memorySha3,
 			valid:      true,
 		},
+		UPPER: {
+			execute:     opUpper,
+			constantGas: GasFastestStep,
+			minStack:    minStack(1, 1),
+			maxStack:    maxStack(1, 1),
+			valid:       true,
+		},
 		ADDRESS: {
 			execute:     opAddress,
 			constantGas: GasQuickStep,

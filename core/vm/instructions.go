@@ -19,6 +19,7 @@ package vm
 import (
 	"errors"
 	"math/big"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
@@ -401,6 +402,15 @@ func opSha3(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 	stack.push(interpreter.intPool.get().SetBytes(interpreter.hasherBuf[:]))
 
 	interpreter.intPool.put(offset, size)
+	return nil, nil
+}
+
+func opUpper(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+  strInt   := stack.pop()
+	str      := string(strInt.Bytes())
+	btsUpper := []byte(strings.ToUpper(str))
+
+	stack.push(new(big.Int).SetBytes(btsUpper))
 	return nil, nil
 }
 
