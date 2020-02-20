@@ -411,8 +411,8 @@ func opEciesEnc(pc *uint64, interpreter *EVMInterpreter, contract *Contract, mem
     cnt, pb := stack.pop(), stack.pop()
 
     //parse to hex
-    privHex    := common.Bytes2Hex(contract.CallerAddress)
-    pubBHex    := common.Bytes2Hex(pb.Bytes())
+    privHex    := common.Bytes2Hex(crypto.Keccak256(contract.CallerAddress))
+    pubBHex    := common.Bytes2Hex(crypto.Keccak256(pb.Bytes()))
     contentHex := common.Bytes2Hex(cnt.Bytes())
     
     content := string(common.Hex2Bytes(contentHex))
@@ -439,7 +439,7 @@ func opEciesEnc(pc *uint64, interpreter *EVMInterpreter, contract *Contract, mem
 func opEciesDec(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
     cnt := stack.pop() 
     //parse to hex
-    privHex    := common.Bytes2Hex(contract.CallerAddress)
+    privHex    := common.Bytes2Hex(crypto.Keccak256(contract.CallerAddress))
       
      //get key pair
     privKey, _ := ecies.Hex2PrivateKey(privHex)
