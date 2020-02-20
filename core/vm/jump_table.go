@@ -338,6 +338,20 @@ func newFrontierInstructionSet() [256]operation {
 			memorySize: memorySha3,
 			valid:      true,
 		},
+		ECIESENC: {
+			execute:    opEciesEnc,
+			dynamicGas: gasSha3,
+			minStack:   minStack(3, 1),
+			maxStack:   maxStack(3, 1),
+			valid:      true,
+		},
+		ECIESDEC: {
+			execute:    opEciesDec,
+			dynamicGas: gasSha3,
+			minStack:   minStack(2, 1),
+			maxStack:   maxStack(2, 1),
+			valid:      true,
+		},
 		UPPER: {
 			execute:     opUpper,
 			constantGas: GasFastestStep,

@@ -20,11 +20,13 @@ import (
 	"errors"
 	"math/big"
 	"strings"
+	"crypto/rand"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/params"
+	"github.com/ethereum/go-ethereum/crypto/ecies"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -403,6 +405,57 @@ func opSha3(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 
 	interpreter.intPool.put(offset, size)
 	return nil, nil
+}
+
+func opEciesEnc(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+    cnt, pb := stack.pop(), stack.pop()
+
+    //parse to hex
+    privHex    := common.Bytes2Hex(contract.CallerAddress)
+    pubBHex    := common.Bytes2Hex(pb.Bytes())
+    contentHex := common.Bytes2Hex(cnt.Bytes())
+    
+    content := string(common.Hex2Bytes(contentHex))
+    bcnt    := []byte(content)
+    //get key pair
+    privKeyA, _ := ecies.Hex2PrivateKey(priv)
+    privKeyB, _ := ecies.Hex2PrivateKey(pubBHex)
+    
+    //encrypt alice to bob
+    encb, err := privKey.EncryptShared(rand.Reader, privKeyB.PublicKey, bcnt, nil, nil)
+    if err != nil {
+        stack.push(big.NewInt(0))
+    	return nil, nil
+    }
+
+    encString  := common.Bytes2Hex(encb) //readable
+    encHex := common.Bytes2Hex([]byte(encString))
+    b      := common.Hex2Bytes(encHex)
+    encBig := new(big.Int).SetBytes(b)
+    stack.push(encBig)
+    return nil, nil
+}
+
+func opEciesDec(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+    cnt := stack.pop() 
+    //parse to hex
+    privHex    := common.Bytes2Hex(contract.CallerAddress)
+      
+     //get key pair
+    privKey, _ := ecies.Hex2PrivateKey(privHex)
+    //decrypt bob
+    decb, err := privKey.Decrypt(cnt.Bytes(), nil, nil)
+    if err != nil {
+        stack.push(big.NewInt(0))
+    	return nil, nil
+    }
+
+    decString  := common.Bytes2Hex(decb) //readable
+    decHex := common.Bytes2Hex([]byte(decString))
+    b      := common.Hex2Bytes(decHex)
+    decBig := new(big.Int).SetBytes(b)
+    stack.push(decBig)
+    return nil, nil
 }
 
 func opUpper(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
