@@ -70,8 +70,14 @@ const (
 	SHR
 	SAR
 
-	SHA3  = 0x20
-	UPPER = 0x24
+)
+
+// 0x20 range - hash and encrypt/decrypt.
+const (
+   SHA3 OpCode = iota + 0x20
+   ECIESENC
+   ECIESDEC
+   UPPER = 0x24
 )
 
 // 0x30 range - closure state.
@@ -252,6 +258,8 @@ var opCodeToString = map[OpCode]string{
 
 	// 0x20 range - crypto.
 	SHA3: "SHA3",
+	ECIESENC : "ECIESENC",
+    ECIESDEC : "ECIESDEC",
 	UPPER: "UPPER", //0x24
 
 	// 0x30 range - closure state.
@@ -422,6 +430,8 @@ var stringToOp = map[string]OpCode{
 	"ADDMOD":         ADDMOD,
 	"MULMOD":         MULMOD,
 	"SHA3":           SHA3,
+	"ECIESENC":       ECIESENC,
+    "ECIESDEC":       ECIESDEC,
 	"UPPER":          UPPER,
 	"ADDRESS":        ADDRESS,
 	"BALANCE":        BALANCE,

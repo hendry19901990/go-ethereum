@@ -37,8 +37,10 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/elliptic"
+	"crypto/ecdsa"
 	"crypto/sha256"
 	"crypto/sha512"
+	"math/big"
 	"fmt"
 	"hash"
 
@@ -49,6 +51,7 @@ var (
 	DefaultCurve                  = ethcrypto.S256()
 	ErrUnsupportedECDHAlgorithm   = fmt.Errorf("ecies: unsupported ECDH algorithm")
 	ErrUnsupportedECIESParameters = fmt.Errorf("ecies: unsupported ECIES parameters")
+	secp256k1N, _  = new(big.Int).SetString("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16)
 )
 
 type ECIESParams struct {
@@ -114,4 +117,12 @@ func AddParamsForCurve(curve elliptic.Curve, params *ECIESParams) {
 // Only the curves P256, P384, and P512 are supported.
 func ParamsFromCurve(curve elliptic.Curve) (params *ECIESParams) {
 	return paramsFromCurve[curve]
+}
+
+func HexToECDSA(prv string) (*ecdsa.PrivateKey, error) {
+	return ethcrypto.HexToECDSA(prv)
+}
+
+func ToECDSA(prv []byte)(*ecdsa.PrivateKey, error) {
+	return ethcrypto.ToECDSA(prv)
 }
